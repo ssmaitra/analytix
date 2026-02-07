@@ -60,8 +60,8 @@ export default function DashboardEditorPage({ dashboards, updateDashboard, datas
       datasetId: datasets[0]?.id ?? '',
       x: 0,
       y: Infinity,
-      w: type === 'data-table' ? 12 : 6,
-      h: type === 'summary-stats' ? 3 : 5,
+      w: type === 'data-table' || type === 'pivot-table' ? 12 : type === 'scorecard' ? 3 : 6,
+      h: type === 'summary-stats' ? 3 : type === 'scorecard' ? 3 : 5,
     };
     setShowAddMenu(false);
     setConfigWidget(newWidget);
@@ -149,6 +149,8 @@ export default function DashboardEditorPage({ dashboards, updateDashboard, datas
                   ['scatter-chart', 'Scatter Chart'],
                   ['summary-stats', 'Summary Stats'],
                   ['data-table', 'Data Table'],
+                  ['pivot-table', 'Pivot Table'],
+                  ['scorecard', 'Scorecard'],
                 ] as [WidgetType, string][]
               ).map(([type, label]) => (
                 <button

@@ -13,7 +13,11 @@ export type WidgetType =
   | 'pie-chart'
   | 'scatter-chart'
   | 'summary-stats'
-  | 'data-table';
+  | 'data-table'
+  | 'pivot-table'
+  | 'scorecard';
+
+export type AggregationFunction = 'sum' | 'avg' | 'count' | 'min' | 'max';
 
 export interface WidgetConfig {
   i: string;
@@ -23,6 +27,18 @@ export interface WidgetConfig {
   xColumn?: string;
   yColumn?: string;
   columns?: string[];
+  /** Pivot table: row grouping column */
+  pivotRowColumn?: string;
+  /** Pivot table: column grouping column */
+  pivotColColumn?: string;
+  /** Pivot table: value column to aggregate */
+  pivotValueColumn?: string;
+  /** Pivot table: aggregation function */
+  pivotAggFunc?: AggregationFunction;
+  /** Scorecard: numeric column for the main value */
+  scorecardColumn?: string;
+  /** Scorecard: aggregation function */
+  scorecardAggFunc?: AggregationFunction;
   x: number;
   y: number;
   w: number;
