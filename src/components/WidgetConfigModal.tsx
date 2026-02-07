@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { CsvDataset, WidgetConfig } from '../types';
+import type { CsvDataset, WidgetConfig, AggregationFunction } from '../types';
 import { getNumericColumns, getCategoryColumns } from '../utils/aggregation';
 
 interface Props {
@@ -132,19 +132,118 @@ export default function WidgetConfigModal({ widget, datasets, onSave, onClose }:
           {config.type === 'summary-stats' && selectedDataset && (
             <div>
               <label className="block text-sm font-medium text-slate-600 mb-1">
-                Numeric Column
+                Numeric Columns
               </label>
-              <select
-                value={config.yColumn ?? ''}
-                onChange={(e) => setConfig({ ...config, yColumn: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">All numeric columns</option>
+              <p className="text-xs text-slate-400 mb-2">Select columns to show stats for</p>
+              <div className="max-h-32 overflow-y-auto space-y-1 border border-slate-200 rounded-lg p-2">
                 {numericCols.map((c) => (
-                  <option key={c} value={c}>{c}</option>
+                  <label key={c} className="flex items-center gap-2 text-sm text-slate-700">
+                    <input
+                      type="checkbox"
+                      checked={!config.columns || config.columns.length === 0 || config.columns.includes(c)}
+                      onChange={(e) => {
+                        const current = config.columns?.length ? config.columns : numericCols;
+                        const next = e.target.checked
+                          ? [...current, c]
+                          : current.filter((col) => col !== c);
+                        setConfig({ ...config, columns: next });
+                      }}
+                    />
+                    {c}
+                  </label>
                 ))}
-              </select>
+              </div>
             </div>
+          )}
+
+          {config.type === 'pivot-table' && selectedDataset && (
+            <>
+              <div>
+                <label className="block text-sm font-medium text-slate-600 mb-1">Row Group</label>
+                <select
+                  value={config.pivotRowColumn ?? ''}
+                  onChange={(e) => setConfig({ ...config, pivotRowColumn: e.target.value })}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select column</option>
+                  {allCols.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-600 mb-1">Column Group</label>
+                <select
+                  value={config.pivotColColumn ?? ''}
+                  onChange={(e) => setConfig({ ...config, pivotColColumn: e.target.value })}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select column</option>
+                  {allCols.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-600 mb-1">Value Column</label>
+                <select
+                  value={config.pivotValueColumn ?? ''}
+                  onChange={(e) => setConfig({ ...config, pivotValueColumn: e.target.value })}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select column</option>
+                  {numericCols.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-600 mb-1">Aggregation</label>
+                <select
+                  value={config.pivotAggFunc ?? 'sum'}
+                  onChange={(e) => setConfig({ ...config, pivotAggFunc: e.target.value as AggregationFunction })}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="sum">Sum</option>
+                  <option value="avg">Average</option>
+                  <option value="count">Count</option>
+                  <option value="min">Min</option>
+                  <option value="max">Max</option>
+                </select>
+              </div>
+            </>
+          )}
+
+          {config.type === 'scorecard' && selectedDataset && (
+            <>
+              <div>
+                <label className="block text-sm font-medium text-slate-600 mb-1">Numeric Column</label>
+                <select
+                  value={config.scorecardColumn ?? ''}
+                  onChange={(e) => setConfig({ ...config, scorecardColumn: e.target.value })}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select column</option>
+                  {numericCols.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-600 mb-1">Aggregation</label>
+                <select
+                  value={config.scorecardAggFunc ?? 'sum'}
+                  onChange={(e) => setConfig({ ...config, scorecardAggFunc: e.target.value as AggregationFunction })}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="sum">Sum</option>
+                  <option value="avg">Average</option>
+                  <option value="count">Count</option>
+                  <option value="min">Min</option>
+                  <option value="max">Max</option>
+                </select>
+              </div>
+            </>
           )}
 
           {needsTableColumns && selectedDataset && (

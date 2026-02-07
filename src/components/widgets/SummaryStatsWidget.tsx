@@ -7,9 +7,10 @@ interface Props {
 }
 
 export default function SummaryStatsWidget({ widget, dataset }: Props) {
-  const numCols = widget.yColumn
-    ? [widget.yColumn]
-    : getNumericColumns(dataset.rows, dataset.headers);
+  const allNumeric = getNumericColumns(dataset.rows, dataset.headers);
+  const numCols = widget.columns?.length
+    ? widget.columns.filter((c) => allNumeric.includes(c))
+    : allNumeric;
 
   if (numCols.length === 0) {
     return <div className="h-full flex items-center justify-center text-xs text-slate-400">No numeric columns found</div>;

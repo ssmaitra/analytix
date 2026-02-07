@@ -5,6 +5,8 @@ import PieChartWidget from './widgets/PieChartWidget';
 import ScatterChartWidget from './widgets/ScatterChartWidget';
 import SummaryStatsWidget from './widgets/SummaryStatsWidget';
 import DataTableWidget from './widgets/DataTableWidget';
+import PivotTableWidget from './widgets/PivotTableWidget';
+import ScorecardWidget from './widgets/ScorecardWidget';
 
 interface Props {
   widget: WidgetConfig;
@@ -60,6 +62,10 @@ function WidgetContent({ widget, dataset }: { widget: WidgetConfig; dataset: Csv
       return <SummaryStatsWidget widget={widget} dataset={dataset} />;
     case 'data-table':
       return <DataTableWidget widget={widget} dataset={dataset} />;
+    case 'pivot-table':
+      return <PivotTableWidget widget={widget} dataset={dataset} />;
+    case 'scorecard':
+      return <ScorecardWidget widget={widget} dataset={dataset} />;
     default:
       return <div className="text-xs text-slate-400">Unknown widget type</div>;
   }
